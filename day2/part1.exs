@@ -3,8 +3,7 @@ defmodule Day2 do
   def run(), do:
     "input.txt"
     |> File.read!()
-    |> String.trim()
-    |> String.split("\n")
+    |> String.split("\n", trim: true)
     |> Stream.map(fn l -> l |> String.split() |> Enum.map(&convert/1) end)
     |> Stream.map(fn [a, b] -> calc_score(a, b) end)
     |> Enum.sum()
