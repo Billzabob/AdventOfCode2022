@@ -1,6 +1,6 @@
 defmodule Day9 do
   def run() do
-    rope = for _ <- 0..1, do: {0, 0}
+    rope = List.duplicate({0, 0}, 2)
 
     "input.txt"
     |> File.read!()
@@ -15,7 +15,7 @@ defmodule Day9 do
   defp parse(line) do
     [direction, n] = String.split(line)
     n = String.to_integer(n)
-    for _ <- 1..n, do: direction
+    List.duplicate(direction, n)
   end
 
   defp move_rope(direction, {[h | rest], positions}) do
@@ -26,14 +26,19 @@ defmodule Day9 do
   end
 
   defp catchup({c, d}, {a, b}) do
-    if max(abs(a - c), abs(b - d)) < 2 do
+    dx = a - c
+    dy = b - d
+
+    if abs(dx) < 2 and abs(dy) < 2 do
       {c, d}
     else
-      x = a - c |> min(1) |> max(-1)
-      y = b - d |> min(1) |> max(-1)
-      {c + x, d + y}
+      dx = dx |> clamp(-1, 1)
+      dy = dy |> clamp(-1, 1)
+      {c + dx, d + dy}
     end
   end
+
+  defp clamp(value, min, max), do: value |> min(max) |> max(min)
 
   defp move({x, y}, "U"), do: {x, y + 1}
   defp move({x, y}, "D"), do: {x, y - 1}
