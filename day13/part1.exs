@@ -5,7 +5,7 @@ defmodule Day13 do
     |> String.split("\n\n")
     |> Stream.map(&compare/1)
     |> Stream.with_index(1)
-    |> Stream.filter(fn {a, _} -> a end)
+    |> Stream.filter(fn {a, _} -> a == :lt end)
     |> Stream.map(fn {_, i} -> i end)
     |> Enum.sum()
     |> IO.puts()
@@ -16,12 +16,13 @@ defmodule Day13 do
   end
 
   defp compare(same, same), do: :eq
-  defp compare([], _), do: true
-  defp compare(_, []), do: false
+  defp compare([], _), do: :lt
+  defp compare(_, []), do: :gt
   defp compare([lh | lt], [rh | rt]), do: with :eq <- compare(lh, rh), do: compare(lt, rt)
   defp compare(l, r) when is_list(l), do: compare(l, [r])
   defp compare(l, r) when is_list(r), do: compare([l], r)
-  defp compare(l, r), do: l < r
+  defp compare(l, r) when l < r, do: :lt
+  defp compare(l, r) when l > r, do: :gt
 
   defp parse("[]" <> rest), do: {[], rest}
   defp parse("[" <> rest) do
